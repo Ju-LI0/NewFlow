@@ -1,11 +1,8 @@
 import os
 
-import time
-
 from dotenv import load_dotenv
 
 from google import genai
-from google.genai import types
 
 from pydantic import BaseModel, Field
 
@@ -13,9 +10,9 @@ from pydantic import BaseModel, Field
 load_dotenv()
 
 
-# ==================================================
-# CONFIGURAÇÃO DO GEMINI
-# ==================================================
+# ============================================================
+# CONFIGURAÇÃO
+# ============================================================
 
 GEMINI_API_KEY = os.getenv(
     "GEMINI_API_KEY"
@@ -23,7 +20,6 @@ GEMINI_API_KEY = os.getenv(
 
 
 if not GEMINI_API_KEY:
-
     raise RuntimeError(
         "GEMINI_API_KEY não foi configurada "
         "no arquivo .env"
@@ -31,54 +27,36 @@ if not GEMINI_API_KEY:
 
 
 client = genai.Client(
-    api_key=GEMINI_API_KEY,
-    http_options=types.HttpOptions(
-        timeout=25000
-    )
+    api_key=GEMINI_API_KEY
 )
 
 
-MODEL_NAME = "gemini-3.7-flash"
+# ============================================================
+# MODELOS GEMINI
+# ============================================================
+
+MODELO_PRINCIPAL = "gemini-3.8-flash"
+
+MODELO_FALLBACK_1 = "gemini-3.7-flash"
+
+MODELO_FALLBACK_2 = "gemini-3.6-flash"
 
 
-# ==================================================
-# CONFIGURAÇÕES DE RETENTATIVA
-# ==================================================
-
-MAX_TENTATIVAS = 2
-
-TEMPOS_ESPERA = [
-    2
-]
-
-
-# ==================================================
-# EXCEÇÕES PERSONALIZADAS
-# ==================================================
+# ============================================================
+# EXCEÇÕES
+# ============================================================
 
 class GeminiRateLimitError(Exception):
-
-    """
-    Exceção utilizada quando o Gemini retorna
-    erro de limite ou quota.
-    """
-
     pass
 
 
 class GeminiTemporaryError(Exception):
-
-    """
-    Exceção utilizada quando o Gemini apresenta
-    um erro temporário de servidor.
-    """
-
     pass
 
 
-# ==================================================
-# MODELOS DE RESPOSTA
-# ==================================================
+# ============================================================
+# ESTRUTURA DAS RECOMENDAÇÕES
+# ============================================================
 
 class Recomendacao(BaseModel):
 
@@ -102,14 +80,15 @@ class ListaRecomendacoes(BaseModel):
 
     recomendacoes: list[Recomendacao] = Field(
         description=(
-            "Lista de músicas recomendadas."
+            "Lista contendo exatamente "
+            "5 músicas recomendadas."
         )
     )
 
 
-# ==================================================
-# VERIFICAÇÃO DE ERROS
-# ==================================================
+# ============================================================
+# VERIFICAÇÃO DE RATE LIMIT
+# ============================================================
 
 def _verificar_erro_rate_limit(error):
 
@@ -123,6 +102,10 @@ def _verificar_erro_rate_limit(error):
         or "resource_exhausted" in mensagem
     )
 
+
+# ============================================================
+# VERIFICAÇÃO DE ERRO TEMPORÁRIO
+# ============================================================
 
 def _verificar_erro_temporario(error):
 
@@ -138,178 +121,206 @@ def _verificar_erro_temporario(error):
         or "temporarily unavailable" in mensagem
         or "timeout" in mensagem
         or "timed out" in mensagem
+        or "readtimeout" in mensagem
     )
 
 
-# ==================================================
-# FUNÇÃO PRINCIPAL DO GEMINI
-# ==================================================
+# ============================================================
+# CHAMADA À INTERACTIONS API
+# ============================================================
+
+def _chamar_modelo(
+    modelo,
+    prompt,
+    resposta_estruturada=False
+):
+
+    print()
+    print("==============================")
+    print("CHAMADA AO GEMINI")
+    print("==============================")
+    print(
+        f"Modelo: {modelo}"
+    )
+    print(
+        "API: Interactions API"
+    )
+    print()
+
+    argumentos = {
+        "model": modelo,
+        "input": prompt
+    }
+
+    # --------------------------------------------------------
+    # SAÍDA ESTRUTURADA
+    # --------------------------------------------------------
+
+    if resposta_estruturada:
+
+        argumentos["response_format"] = {
+            "type": "text",
+            "mime_type": "application/json",
+            "schema": (
+                ListaRecomendacoes
+                .model_json_schema()
+            )
+        }
+
+    interaction = client.interactions.create(
+        **argumentos
+    )
+
+    if not interaction:
+
+        raise GeminiTemporaryError(
+            "O Gemini não retornou uma interação."
+        )
+
+    if not interaction.output_text:
+
+        raise GeminiTemporaryError(
+            "O Gemini retornou uma resposta vazia."
+        )
+
+    print()
+    print(
+        "✅ Gemini respondeu com sucesso."
+    )
+    print(
+        f"Modelo utilizado: {modelo}"
+    )
+    print()
+
+    return interaction
+
+
+# ============================================================
+# EXECUTA GEMINI COM FALLBACK
+# ============================================================
 
 def _executar_interacao(
     prompt,
-    response_format=None
+    resposta_estruturada=False
 ):
 
-    ultima_excecao = None
+    modelos = [
+        MODELO_PRINCIPAL,
+        MODELO_FALLBACK_1,
+        MODELO_FALLBACK_2
+    ]
 
-    for tentativa in range(
-        MAX_TENTATIVAS
-    ):
+    ultimo_erro = None
+
+    for indice, modelo in enumerate(modelos):
 
         try:
 
-            print()
-
-            print(
-                f"🤖 Gemini - tentativa "
-                f"{tentativa + 1}/{MAX_TENTATIVAS}"
-            )
-
-            # ------------------------------------------
-            # CONFIGURAÇÃO DA RESPOSTA
-            # ------------------------------------------
-
-            config = None
-
-            if response_format:
-
-                config = types.GenerateContentConfig(
-                    response_mime_type=(
-                        "application/json"
-                    ),
-                    response_schema=(
-                        ListaRecomendacoes
-                    ),
-                    temperature=0.7,
-                    max_output_tokens=1000
+            response = _chamar_modelo(
+                modelo=modelo,
+                prompt=prompt,
+                resposta_estruturada=(
+                    resposta_estruturada
                 )
-
-            # ------------------------------------------
-            # CHAMADA AO GEMINI
-            # ------------------------------------------
-
-            response = client.models.generate_content(
-                model=MODEL_NAME,
-                contents=prompt,
-                config=config
-            )
-
-            print(
-                "✅ Gemini respondeu com sucesso."
             )
 
             return response
 
         except Exception as error:
 
-            ultima_excecao = error
+            ultimo_erro = error
 
             print()
-
+            print("==============================")
+            print("ERRO NO GEMINI")
+            print("==============================")
             print(
-                "⚠️ Erro recebido do Gemini:"
+                f"Modelo: {modelo}"
             )
-
             print(
-                str(error)
+                f"Tipo: {type(error).__name__}"
             )
+            print(
+                f"Mensagem: {str(error)}"
+            )
+            print()
 
-            # ------------------------------------------
-            # LIMITE / QUOTA
-            # ------------------------------------------
+            # ------------------------------------------------
+            # RATE LIMIT
+            # ------------------------------------------------
 
-            if _verificar_erro_rate_limit(
-                error
-            ):
-
-                print()
+            if _verificar_erro_rate_limit(error):
 
                 print(
                     "⚠️ Limite/quota do Gemini atingido."
                 )
 
+                if indice < len(modelos) - 1:
+
+                    print(
+                        "➡️ Tentando próximo modelo..."
+                    )
+
+                    continue
+
                 raise GeminiRateLimitError(
-                    "O limite de requisições do Gemini "
+                    "O limite ou quota do Gemini "
                     "foi atingido temporariamente."
                 ) from error
 
-            # ------------------------------------------
-            # ERRO TEMPORÁRIO
-            # ------------------------------------------
+            # ------------------------------------------------
+            # ERROS TEMPORÁRIOS
+            # ------------------------------------------------
 
-            if _verificar_erro_temporario(
-                error
-            ):
-
-                if tentativa >= (
-                    MAX_TENTATIVAS - 1
-                ):
-
-                    print()
-
-                    print(
-                        "❌ Gemini continua indisponível "
-                        "após as tentativas."
-                    )
-
-                    raise GeminiTemporaryError(
-                        "O Gemini está temporariamente "
-                        "indisponível. Tente novamente "
-                        "em alguns instantes."
-                    ) from error
-
-                tempo_espera = TEMPOS_ESPERA[
-                    tentativa
-                ]
-
-                print()
+            if _verificar_erro_temporario(error):
 
                 print(
-                    "⚠️ Gemini está temporariamente "
+                    "⚠️ Gemini temporariamente "
                     "indisponível."
                 )
 
-                print(
-                    f"⏳ Aguardando "
-                    f"{tempo_espera} segundos "
-                    f"antes de tentar novamente..."
-                )
+                if indice < len(modelos) - 1:
 
-                time.sleep(
-                    tempo_espera
-                )
+                    print(
+                        "➡️ Tentando próximo modelo..."
+                    )
 
-                continue
+                    continue
 
-            # ------------------------------------------
-            # ERRO DESCONHECIDO
-            # ------------------------------------------
+                raise GeminiTemporaryError(
+                    "Os modelos do Gemini estão "
+                    "temporariamente indisponíveis. "
+                    "Tente novamente em alguns instantes."
+                ) from error
+
+            # ------------------------------------------------
+            # ERRO NÃO RECUPERÁVEL
+            # ------------------------------------------------
 
             raise
 
     raise GeminiTemporaryError(
-        "Não foi possível obter resposta do Gemini."
-    ) from ultima_excecao
+        "Não foi possível obter resposta "
+        "do Gemini."
+    ) from ultimo_erro
 
 
-# ==================================================
-# PERGUNTA SIMPLES AO GEMINI
-# ==================================================
+# ============================================================
+# PERGUNTA NORMAL AO GEMINI
+# ============================================================
 
-def perguntar_gemini(
-    pergunta
-):
+def perguntar_gemini(pergunta):
 
-    response = _executar_interacao(
+    interaction = _executar_interacao(
         prompt=pergunta
     )
 
-    return response.text
+    return interaction.output_text
 
 
-# ==================================================
-# GERAÇÃO DE RECOMENDAÇÕES
-# ==================================================
+# ============================================================
+# GERAR RECOMENDAÇÕES MUSICAIS
+# ============================================================
 
 def gerar_recomendacoes(
     generos,
@@ -360,43 +371,69 @@ REGRAS
 5. Explique de forma curta e natural
    por que cada música combina com o usuário.
 
-6. Responda somente no formato JSON solicitado.
+6. Cada recomendação deve conter:
 
-7. Cada recomendação deve conter:
    - musica
    - artista
    - motivo
+
+7. Mantenha cada motivo curto,
+   preferencialmente em uma ou duas frases.
+
+8. Não adicione informações extras
+   fora das recomendações.
+
+9. Retorne exatamente 5 recomendações.
 """
 
-    # ==================================================
-    # CHAMADA AO GEMINI
-    # ==================================================
-
-    response = _executar_interacao(
+    interaction = _executar_interacao(
         prompt=prompt,
-        response_format=True
+        resposta_estruturada=True
     )
 
-    # ==================================================
-    # VALIDAÇÃO DA RESPOSTA
-    # ==================================================
+    # ========================================================
+    # VALIDAR JSON
+    # ========================================================
 
-    if not response.text:
+    try:
 
-        raise ValueError(
-            "O Gemini retornou uma resposta vazia."
+        resultado = (
+            ListaRecomendacoes
+            .model_validate_json(
+                interaction.output_text
+            )
         )
 
-    resultado = (
-        ListaRecomendacoes
-        .model_validate_json(
-            response.text
-        )
-    )
+    except Exception as error:
 
-    # ==================================================
-    # VALIDAÇÃO DAS RECOMENDAÇÕES
-    # ==================================================
+        print()
+        print("==============================")
+        print("ERRO AO VALIDAR RESPOSTA")
+        print("==============================")
+        print(
+            f"Tipo: {type(error).__name__}"
+        )
+        print(
+            f"Erro: {str(error)}"
+        )
+        print()
+        print(
+            "Resposta recebida:"
+        )
+        print(
+            interaction.output_text
+        )
+        print()
+
+        raise GeminiTemporaryError(
+            "O Gemini retornou uma resposta "
+            "incompleta ou inválida. "
+            "Tente gerar novamente."
+        ) from error
+
+    # ========================================================
+    # VALIDAR QUANTIDADE
+    # ========================================================
 
     if not resultado.recomendacoes:
 
@@ -405,19 +442,34 @@ REGRAS
             "recomendação."
         )
 
-    if len(
-        resultado.recomendacoes
-    ) != 5:
+    if len(resultado.recomendacoes) != 5:
 
         raise ValueError(
             "O Gemini não retornou exatamente "
             "5 recomendações."
         )
 
-    print()
+    # ========================================================
+    # SUCESSO
+    # ========================================================
 
+    print()
     print(
         "✅ Gemini retornou 5 recomendações."
     )
+    print()
+
+    for indice, recomendacao in enumerate(
+        resultado.recomendacoes,
+        start=1
+    ):
+
+        print(
+            f"{indice}. "
+            f"{recomendacao.musica} - "
+            f"{recomendacao.artista}"
+        )
+
+    print()
 
     return resultado.recomendacoes
