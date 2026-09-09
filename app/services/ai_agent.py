@@ -1,13 +1,21 @@
 import os
+
 import time
 
 from dotenv import load_dotenv
+
 from google import genai
+from google.genai import types
+
 from pydantic import BaseModel, Field
 
 
 load_dotenv()
 
+
+# ==================================================
+# CONFIGURAÇÃO DO GEMINI
+# ==================================================
 
 GEMINI_API_KEY = os.getenv(
     "GEMINI_API_KEY"
@@ -23,7 +31,10 @@ if not GEMINI_API_KEY:
 
 
 client = genai.Client(
-    api_key=GEMINI_API_KEY
+    api_key=GEMINI_API_KEY,
+    http_options=types.HttpOptions(
+        timeout=25000
+    )
 )
 
 
@@ -34,12 +45,10 @@ MODEL_NAME = "gemini-3.7-flash"
 # CONFIGURAÇÕES DE RETENTATIVA
 # ==================================================
 
-MAX_TENTATIVAS = 3
+MAX_TENTATIVAS = 2
 
 TEMPOS_ESPERA = [
-    2,
-    5,
-    10
+    2
 ]
 
 
@@ -51,7 +60,7 @@ class GeminiRateLimitError(Exception):
 
     """
     Exceção utilizada quando o Gemini retorna
-    erro de limite/quota.
+    erro de limite ou quota.
     """
 
     pass
@@ -92,7 +101,9 @@ class Recomendacao(BaseModel):
 class ListaRecomendacoes(BaseModel):
 
     recomendacoes: list[Recomendacao] = Field(
-        description="Lista de músicas recomendadas."
+        description=(
+            "Lista de músicas recomendadas."
+        )
     )
 
 
@@ -125,6 +136,8 @@ def _verificar_erro_temporario(error):
         or "service unavailable" in mensagem
         or "high demand" in mensagem
         or "temporarily unavailable" in mensagem
+        or "timeout" in mensagem
+        or "timed out" in mensagem
     )
 
 
@@ -146,37 +159,60 @@ def _executar_interacao(
         try:
 
             print()
+
             print(
                 f"🤖 Gemini - tentativa "
                 f"{tentativa + 1}/{MAX_TENTATIVAS}"
             )
 
-            argumentos = {
-                "model": MODEL_NAME,
-                "input": prompt
-            }
+            # ------------------------------------------
+            # CONFIGURAÇÃO DA RESPOSTA
+            # ------------------------------------------
+
+            config = None
 
             if response_format:
 
-                argumentos[
-                    "response_format"
-                ] = response_format
-
-            interaction = (
-                client.interactions.create(
-                    **argumentos
+                config = types.GenerateContentConfig(
+                    response_mime_type=(
+                        "application/json"
+                    ),
+                    response_schema=(
+                        ListaRecomendacoes
+                    ),
+                    temperature=0.7,
+                    max_output_tokens=1000
                 )
+
+            # ------------------------------------------
+            # CHAMADA AO GEMINI
+            # ------------------------------------------
+
+            response = client.models.generate_content(
+                model=MODEL_NAME,
+                contents=prompt,
+                config=config
             )
 
             print(
                 "✅ Gemini respondeu com sucesso."
             )
 
-            return interaction
+            return response
 
         except Exception as error:
 
             ultima_excecao = error
+
+            print()
+
+            print(
+                "⚠️ Erro recebido do Gemini:"
+            )
+
+            print(
+                str(error)
+            )
 
             # ------------------------------------------
             # LIMITE / QUOTA
@@ -187,6 +223,7 @@ def _executar_interacao(
             ):
 
                 print()
+
                 print(
                     "⚠️ Limite/quota do Gemini atingido."
                 )
@@ -209,6 +246,7 @@ def _executar_interacao(
                 ):
 
                     print()
+
                     print(
                         "❌ Gemini continua indisponível "
                         "após as tentativas."
@@ -225,6 +263,7 @@ def _executar_interacao(
                 ]
 
                 print()
+
                 print(
                     "⚠️ Gemini está temporariamente "
                     "indisponível."
@@ -261,11 +300,11 @@ def perguntar_gemini(
     pergunta
 ):
 
-    interaction = _executar_interacao(
+    response = _executar_interacao(
         prompt=pergunta
     )
 
-    return interaction.output_text
+    return response.text
 
 
 # ==================================================
@@ -321,34 +360,43 @@ REGRAS
 5. Explique de forma curta e natural
    por que cada música combina com o usuário.
 
-6. Responda somente no formato estruturado
-   solicitado.
+6. Responda somente no formato JSON solicitado.
+
+7. Cada recomendação deve conter:
+   - musica
+   - artista
+   - motivo
 """
 
-    response_format = {
-        "type": "text",
-        "mime_type": "application/json",
-        "schema": (
-            ListaRecomendacoes
-            .model_json_schema()
-        )
-    }
+    # ==================================================
+    # CHAMADA AO GEMINI
+    # ==================================================
 
-    interaction = _executar_interacao(
+    response = _executar_interacao(
         prompt=prompt,
-        response_format=response_format
+        response_format=True
     )
 
     # ==================================================
     # VALIDAÇÃO DA RESPOSTA
     # ==================================================
 
+    if not response.text:
+
+        raise ValueError(
+            "O Gemini retornou uma resposta vazia."
+        )
+
     resultado = (
         ListaRecomendacoes
         .model_validate_json(
-            interaction.output_text
+            response.text
         )
     )
+
+    # ==================================================
+    # VALIDAÇÃO DAS RECOMENDAÇÕES
+    # ==================================================
 
     if not resultado.recomendacoes:
 
@@ -365,5 +413,11 @@ REGRAS
             "O Gemini não retornou exatamente "
             "5 recomendações."
         )
+
+    print()
+
+    print(
+        "✅ Gemini retornou 5 recomendações."
+    )
 
     return resultado.recomendacoes
