@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
@@ -11,11 +12,11 @@
     >
 
     <title>Seu perfil musical | NewFlow</title>
-    
+
     <link
-    rel="icon"
-    type="image/png"
-    href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
+        rel="icon"
+        type="image/png"
+        href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
     >
 
     <link
@@ -25,15 +26,46 @@
 
 </head>
 
+
 <body>
+
 
     <main class="onboarding-container">
 
         <section class="onboarding-card">
 
-            <div class="logo">
+
+            <!-- LOGO -->
+
+            <a
+                href="{{ url_for('recommendations.recommendations') }}"
+                class="logo"
+            >
                 <span>New</span>Flow
+            </a>
+
+
+            <!-- NAVEGAÇÃO -->
+
+            <div class="profile-navigation">
+
+                <a
+                    href="{{ url_for('recommendations.recommendations') }}"
+                >
+                    ← Voltar para gerar músicas
+                </a>
+
+                <a
+                    href="{{ url_for('profile.profile') }}"
+                >
+                    Meu perfil
+                </a>
+
             </div>
+
+
+
+            <!-- PROGRESSO -->
 
             <div class="progress">
 
@@ -41,9 +73,15 @@
 
             </div>
 
+
+
+            <!-- INTRO -->
+
             <div class="intro">
 
-                <span class="music-icon">🎵</span>
+                <span class="music-icon">
+                    🎵
+                </span>
 
                 <h1>
                     Vamos conhecer<br>
@@ -58,6 +96,8 @@
 
             </div>
 
+
+
             {% if erro %}
 
                 <div class="error-message">
@@ -66,7 +106,10 @@
 
             {% endif %}
 
+
+
             <form method="POST">
+
 
                 <div class="form-group">
 
@@ -90,6 +133,7 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="artistas">
@@ -107,6 +151,7 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="musicas_favoritas">
@@ -120,6 +165,7 @@
                     >{{ perfil[4] if perfil else '' }}</textarea>
 
                 </div>
+
 
 
                 <div class="form-group">
@@ -177,6 +223,7 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="decadas_preferidas">
@@ -194,15 +241,19 @@
                 </div>
 
 
+
                 <button type="submit">
                     Salvar meu perfil musical
                 </button>
 
+
             </form>
+
 
         </section>
 
     </main>
+
 
 </body>
 

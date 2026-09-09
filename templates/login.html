@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -10,16 +12,18 @@
     >
 
     <title>Login | NewFlow</title>
+
     <link
-    rel="icon"
-    type="image/png"
-    href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
+        rel="icon"
+        type="image/png"
+        href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
     >
-    
+
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='css/login.css') }}"
     >
+
 </head>
 
 <body>
@@ -28,21 +32,43 @@
 
         <section class="auth-card">
 
-            <div class="logo">
-                <span>New</span>Flow
-            </div>
+            <!-- LOGO -->
 
-            <h1>Bem-vindo de volta</h1>
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+                <span>New</span>Flow
+            </a>
+
+
+            <!-- BOTÃO VOLTAR -->
+
+            <a
+                href="{{ url_for('home') }}"
+                class="back-link"
+            >
+                ← Voltar para o NewFlow
+            </a>
+
+
+            <h1>
+                Bem-vindo de volta
+            </h1>
 
             <p class="subtitle">
                 Entre na sua conta e descubra novas músicas.
             </p>
 
+
             {% if erro %}
+
                 <div class="error-message">
                     {{ erro }}
                 </div>
+
             {% endif %}
+
 
             <form method="POST">
 
@@ -62,6 +88,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="senha">
@@ -78,18 +105,24 @@
 
                 </div>
 
+
                 <button type="submit">
                     Entrar
                 </button>
 
             </form>
 
+
             <p class="auth-link">
+
                 Ainda não possui uma conta?
 
-                <a href="{{ url_for('auth.register') }}">
+                <a
+                    href="{{ url_for('auth.register') }}"
+                >
                     Criar conta
                 </a>
+
             </p>
 
         </section>

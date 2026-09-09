@@ -1,7 +1,9 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -12,15 +14,16 @@
     <title>Cadastro | NewFlow</title>
 
     <link
-    rel="icon"
-    type="image/png"
-    href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
+        rel="icon"
+        type="image/png"
+        href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
     >
 
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='css/login.css') }}"
     >
+
 </head>
 
 <body>
@@ -29,21 +32,43 @@
 
         <section class="auth-card">
 
-            <div class="logo">
-                <span>New</span>Flow
-            </div>
+            <!-- LOGO -->
 
-            <h1>Crie sua conta</h1>
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+                <span>New</span>Flow
+            </a>
+
+
+            <!-- BOTÃO VOLTAR -->
+
+            <a
+                href="{{ url_for('home') }}"
+                class="back-link"
+            >
+                ← Voltar para o NewFlow
+            </a>
+
+
+            <h1>
+                Crie sua conta
+            </h1>
 
             <p class="subtitle">
                 Comece a descobrir músicas que combinam com você.
             </p>
 
+
             {% if erro %}
+
                 <div class="error-message">
                     {{ erro }}
                 </div>
+
             {% endif %}
+
 
             <form method="POST">
 
@@ -63,6 +88,7 @@
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="email">
@@ -78,6 +104,7 @@
                     >
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -96,18 +123,24 @@
 
                 </div>
 
+
                 <button type="submit">
                     Criar conta
                 </button>
 
             </form>
 
+
             <p class="auth-link">
+
                 Já possui uma conta?
 
-                <a href="{{ url_for('auth.login') }}">
+                <a
+                    href="{{ url_for('auth.login') }}"
+                >
                     Entrar
                 </a>
+
             </p>
 
         </section>

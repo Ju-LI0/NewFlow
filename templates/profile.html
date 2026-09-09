@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
@@ -13,11 +14,11 @@
     <title>Meu Perfil | NewFlow</title>
 
     <link
-    rel="icon"
-    type="image/png"
-    href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
+        rel="icon"
+        type="image/png"
+        href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
     >
-    
+
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='css/profile.css') }}"
@@ -25,17 +26,43 @@
 
 </head>
 
+
 <body>
+
 
     <main class="profile-container">
 
         <section class="profile-card">
 
+
             <!-- LOGO -->
 
-            <div class="logo">
+            <a
+                href="{{ url_for('recommendations.recommendations') }}"
+                class="logo"
+            >
                 <span>New</span>Flow
+            </a>
+
+
+            <!-- NAVEGAÇÃO -->
+
+            <div class="profile-navigation">
+
+                <a
+                    href="{{ url_for('recommendations.recommendations') }}"
+                >
+                    ← Voltar para gerar músicas
+                </a>
+
+                <a
+                    href="{{ url_for('home') }}"
+                >
+                    Página principal
+                </a>
+
             </div>
+
 
 
             <!-- CABEÇALHO -->
@@ -61,6 +88,7 @@
             </div>
 
 
+
             <!-- INFORMAÇÕES DA CONTA -->
 
             <div class="section">
@@ -69,7 +97,9 @@
                     👤 Sua conta
                 </h2>
 
+
                 <div class="account-info">
+
 
                     <div class="info-item">
 
@@ -84,6 +114,7 @@
                     </div>
 
 
+
                     <div class="info-item">
 
                         <span class="info-label">
@@ -96,9 +127,11 @@
 
                     </div>
 
+
                 </div>
 
             </div>
+
 
 
             <!-- PERFIL MUSICAL -->
@@ -136,6 +169,7 @@
                     </div>
 
 
+
                     <!-- ARTISTAS -->
 
                     <div class="music-card">
@@ -157,6 +191,7 @@
                         </div>
 
                     </div>
+
 
 
                     <!-- MÚSICAS -->
@@ -182,6 +217,7 @@
                     </div>
 
 
+
                     <!-- HUMOR -->
 
                     <div class="music-card">
@@ -203,6 +239,7 @@
                         </div>
 
                     </div>
+
 
 
                     <!-- DÉCADAS -->
@@ -227,14 +264,25 @@
 
                     </div>
 
+
                 </div>
 
             </div>
 
 
+
             <!-- AÇÕES -->
 
             <div class="actions">
+
+
+                <a
+                    href="{{ url_for('recommendations.recommendations') }}"
+                    class="primary-button"
+                >
+                    ✦ Gerar novas músicas
+                </a>
+
 
                 <a
                     href="{{ url_for('profile.onboarding') }}"
@@ -243,6 +291,7 @@
                     ✏️ Editar perfil musical
                 </a>
 
+
                 <a
                     href="{{ url_for('auth.logout') }}"
                     class="secondary-button"
@@ -250,7 +299,9 @@
                     Sair da conta
                 </a>
 
+
             </div>
+
 
 
             <!-- PRÓXIMO PASSO -->
@@ -268,8 +319,8 @@
                     </h3>
 
                     <p>
-                        Em breve o NewFlow usará inteligência
-                        artificial para encontrar músicas
+                        Volte para a área de recomendações
+                        e deixe o NewFlow encontrar músicas
                         que combinam com o seu estilo.
                     </p>
 
@@ -277,9 +328,12 @@
 
             </div>
 
+
+
         </section>
 
     </main>
+
 
 </body>
 

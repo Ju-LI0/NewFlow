@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
@@ -13,11 +14,11 @@
     <title>NewFlow - Dashboard</title>
 
     <link
-    rel="icon"
-    type="image/png"
-    href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
+        rel="icon"
+        type="image/png"
+        href="{{ url_for('static', filename='images/newflow-favicon.png') }}"
     >
-    
+
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='css/dashboard.css') }}"
@@ -33,65 +34,120 @@
 
     <aside class="sidebar">
 
-        <div class="logo">
+        <!-- LOGO -->
 
-            <span class="logo-icon">♫</span>
+        <a
+            href="{{ url_for('recommendations.recommendations') }}"
+            class="logo"
+        >
 
-            <span>NewFlow</span>
+            <span class="logo-icon">
+                ♫
+            </span>
 
-        </div>
+            <span>
+                NewFlow
+            </span>
 
+        </a>
+
+
+        <!-- NAVEGAÇÃO -->
 
         <nav class="navigation">
+
+            <!-- GERAR MÚSICAS / INÍCIO -->
 
             <a
                 href="{{ url_for('recommendations.recommendations') }}"
                 class="nav-item active"
             >
 
-                <span class="nav-icon">⌂</span>
+                <span class="nav-icon">
+                    ⌂
+                </span>
 
-                <span>Início</span>
+                <span>
+                    Gerar músicas
+                </span>
 
             </a>
 
+
+            <!-- MEU PERFIL -->
 
             <a
                 href="{{ url_for('profile.profile') }}"
                 class="nav-item"
             >
 
-                <span class="nav-icon">◉</span>
+                <span class="nav-icon">
+                    ◉
+                </span>
 
-                <span>Meu perfil</span>
+                <span>
+                    Meu perfil
+                </span>
 
             </a>
 
+
+            <!-- EDITAR GOSTO -->
 
             <a
                 href="{{ url_for('profile.onboarding') }}"
                 class="nav-item"
             >
 
-                <span class="nav-icon">♫</span>
+                <span class="nav-icon">
+                    ♫
+                </span>
 
-                <span>Editar gosto</span>
+                <span>
+                    Editar gosto
+                </span>
 
             </a>
 
         </nav>
 
 
+        <!-- PARTE INFERIOR -->
+
         <div class="sidebar-bottom">
+
+            <!-- PÁGINA PRINCIPAL -->
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logout"
+            >
+
+                <span>
+                    ←
+                </span>
+
+                <span>
+                    Página principal
+                </span>
+
+            </a>
+
+
+            <!-- SAIR -->
 
             <a
                 href="{{ url_for('auth.logout') }}"
                 class="logout"
             >
 
-                <span>↪</span>
+                <span>
+                    ↪
+                </span>
 
-                <span>Sair</span>
+                <span>
+                    Sair
+                </span>
 
             </a>
 
@@ -126,9 +182,7 @@
             <div class="user-area">
 
                 <div class="user-avatar">
-
                     {{ usuario_nome[0]|upper }}
-
                 </div>
 
             </div>
@@ -153,11 +207,15 @@
 
                             {% if category == "success" %}
 
-                                <span>✓</span>
+                                <span>
+                                    ✓
+                                </span>
 
                             {% else %}
 
-                                <span>!</span>
+                                <span>
+                                    !
+                                </span>
 
                             {% endif %}
 
@@ -222,16 +280,20 @@
             <div class="hero-decoration">
 
                 <div class="music-circle">
-
                     <span>♫</span>
-
                 </div>
 
-                <div class="music-note note-1">♪</div>
+                <div class="music-note note-1">
+                    ♪
+                </div>
 
-                <div class="music-note note-2">♫</div>
+                <div class="music-note note-2">
+                    ♫
+                </div>
 
-                <div class="music-note note-3">♬</div>
+                <div class="music-note note-3">
+                    ♬
+                </div>
 
             </div>
 
@@ -357,7 +419,6 @@
 
                 </div>
 
-
             </div>
 
         </section>
@@ -394,29 +455,19 @@
 
             {% if recomendacoes %}
 
-
                 <div class="recommendations-grid">
-
 
                     {% for recomendacao in recomendacoes %}
 
-
                         <article class="recommendation-card">
 
-
                             <div class="album-placeholder">
-
                                 <span>♫</span>
-
                             </div>
-
 
                             <div class="recommendation-number">
-
                                 {{ "%02d"|format(loop.index) }}
-
                             </div>
-
 
                             <div class="recommendation-content">
 
@@ -424,16 +475,13 @@
                                     RECOMENDAÇÃO {{ loop.index }}
                                 </span>
 
-
                                 <h3>
                                     {{ recomendacao[1] }}
                                 </h3>
 
-
                                 <p class="artist">
                                     {{ recomendacao[2] }}
                                 </p>
-
 
                                 <div class="reason">
 
@@ -449,12 +497,9 @@
 
                             </div>
 
-
                         </article>
 
-
                     {% endfor %}
-
 
                 </div>
 
@@ -470,18 +515,15 @@
                         ♫
                     </div>
 
-
                     <h3>
                         Ainda não temos recomendações
                     </h3>
-
 
                     <p>
                         Clique no botão acima para deixar
                         nossa inteligência artificial descobrir
                         novas músicas para você.
                     </p>
-
 
                     <a
                         href="{{ url_for('recommendations.generate_recommendations') }}"
@@ -501,9 +543,7 @@
 
                 </div>
 
-
             {% endif %}
-
 
         </section>
 
@@ -512,7 +552,6 @@
         <!-- AI INFORMATION -->
 
         <section class="ai-section">
-
 
             <div class="ai-icon">
                 ✦
@@ -539,7 +578,6 @@
 
             </div>
 
-
         </section>
 
 
@@ -553,7 +591,6 @@
             </p>
 
         </footer>
-
 
     </main>
 

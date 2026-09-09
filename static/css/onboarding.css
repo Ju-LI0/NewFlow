@@ -1,425 +1,462 @@
+/* ============================================================
+   NEWFLOW — ONBOARDING
+   ============================================================ */
+
+:root {
+    --background: #050505;
+
+    --card: #111111;
+    --card-secondary: #171717;
+
+    --green: #1ed760;
+    --green-light: #42f57b;
+    --green-dark: #159447;
+
+    --white: #ffffff;
+    --text: #eeeeee;
+    --text-secondary: #a7a7a7;
+    --text-muted: #666666;
+
+    --border: #252525;
+
+    --danger: #ef7777;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-
-:root {
-
-    --background: #080808;
-    --card: #151515;
-    --card-secondary: #202020;
-
-    --green: #1db954;
-    --green-light: #1ed760;
-
-    --text: #ffffff;
-    --text-secondary: #a7a7a7;
-
-    --border: #292929;
-
-    --danger: #ff6b6b;
-}
-
+/* ============================================================
+   BODY
+   ============================================================ */
 
 body {
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
     min-height: 100vh;
 
+    font-family: Arial, Helvetica, sans-serif;
+
     background:
-
         radial-gradient(
-            circle at top left,
-            rgba(29, 185, 84, 0.14),
+            circle at 50% 0%,
+            rgba(30, 215, 96, 0.08),
             transparent 35%
         ),
-
-        radial-gradient(
-            circle at bottom right,
-            rgba(29, 185, 84, 0.08),
-            transparent 35%
-        ),
-
         var(--background);
 
     color: var(--text);
 }
 
+/* ============================================================
+   CONTAINER
+   ============================================================ */
 
 .onboarding-container {
-
     min-height: 100vh;
 
     display: flex;
 
-    justify-content: center;
-
     align-items: center;
+    justify-content: center;
 
     padding: 40px 20px;
 }
 
+/* ============================================================
+   CARD
+   ============================================================ */
 
 .onboarding-card {
-
     width: 100%;
-
     max-width: 650px;
-
-    background:
-        rgba(21, 21, 21, 0.96);
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 22px;
 
     padding: 45px;
 
-    box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.55);
+    background:
+        linear-gradient(
+            145deg,
+            #131313,
+            #0d0d0d
+        );
 
-    animation:
-        cardAppear 0.5s ease;
+    border: 1px solid var(--border);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.60);
+
+    animation: cardAppear 0.45s ease;
 }
 
-
 @keyframes cardAppear {
-
     from {
-
         opacity: 0;
-
-        transform:
-            translateY(20px);
-
+        transform: translateY(20px);
     }
 
     to {
-
         opacity: 1;
-
-        transform:
-            translateY(0);
-
+        transform: translateY(0);
     }
-
 }
 
-
-/* LOGO */
+/* ============================================================
+   LOGO
+   ============================================================ */
 
 .logo {
+    display: block;
+
+    margin-bottom: 25px;
 
     text-align: center;
 
-    font-size: 36px;
+    color: var(--white);
 
+    font-size: 36px;
     font-weight: 800;
 
     letter-spacing: -2px;
 
-    margin-bottom: 25px;
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
 }
 
+.logo:hover {
+    color: var(--green);
+
+    transform: translateY(-1px);
+}
 
 .logo span {
-
     color: var(--green);
 }
 
-
-/* PROGRESS */
+/* ============================================================
+   PROGRESS
+   ============================================================ */
 
 .progress {
-
     width: 100%;
-
     height: 5px;
 
-    background: #292929;
-
-    border-radius: 10px;
+    margin-bottom: 35px;
 
     overflow: hidden;
 
-    margin-bottom: 35px;
-}
-
-
-.progress-bar {
-
-    width: 100%;
-
-    height: 100%;
-
-    background: var(--green);
+    background: #202020;
 
     border-radius: 10px;
 }
 
+.progress-bar {
+    width: 100%;
+    height: 100%;
 
-/* INTRO */
+    background:
+        linear-gradient(
+            90deg,
+            var(--green-dark),
+            var(--green),
+            var(--green-light)
+        );
+
+    border-radius: 10px;
+}
+
+/* ============================================================
+   INTRO
+   ============================================================ */
 
 .intro {
+    margin-bottom: 35px;
 
     text-align: center;
-
-    margin-bottom: 35px;
 }
-
 
 .music-icon {
-
     display: block;
 
-    font-size: 42px;
-
     margin-bottom: 15px;
+
+    color: var(--green);
+
+    font-size: 42px;
 }
 
-
 .intro h1 {
+    margin-bottom: 15px;
+
+    color: var(--white);
 
     font-size: 30px;
 
     line-height: 1.2;
-
-    margin-bottom: 15px;
 }
 
-
 .intro p {
+    max-width: 520px;
+
+    margin: 0 auto;
 
     color: var(--text-secondary);
 
     font-size: 15px;
 
     line-height: 1.7;
-
-    max-width: 520px;
-
-    margin:
-        0 auto;
 }
 
-
-/* FORM */
+/* ============================================================
+   FORM
+   ============================================================ */
 
 .form-group {
-
     margin-bottom: 23px;
 }
 
-
 label {
-
     display: block;
 
     margin-bottom: 9px;
 
+    color: #dddddd;
+
     font-size: 14px;
-
     font-weight: 700;
-
-    color: #eeeeee;
 }
-
 
 input,
 textarea,
 select {
-
     width: 100%;
-
-    border:
-        1px solid var(--border);
-
-    border-radius: 10px;
 
     background: var(--card-secondary);
 
-    color: var(--text);
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    color: var(--white);
 
     font-family: inherit;
 
     font-size: 15px;
 
-    outline: none;
-
     transition:
-        border 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-
 input,
 select {
-
     height: 52px;
 
-    padding:
-        0 16px;
+    padding: 0 16px;
 }
-
 
 textarea {
-
     min-height: 100px;
 
-    resize: vertical;
-
     padding: 15px 16px;
+
+    resize: vertical;
 }
 
-
-input::placeholder,
-textarea::placeholder {
-
-    color: #777777;
+input:hover,
+textarea:hover,
+select:hover {
+    border-color: #353535;
 }
-
 
 input:focus,
 textarea:focus,
 select:focus {
+    background: #191919;
 
     border-color: var(--green);
 
     box-shadow:
         0 0 0 3px
-        rgba(29, 185, 84, 0.12);
+        rgba(30, 215, 96, 0.10);
 }
 
-
-select {
-
-    cursor: pointer;
+input::placeholder,
+textarea::placeholder {
+    color: #626262;
 }
-
 
 small {
-
     display: block;
 
     margin-top: 7px;
 
-    color: #777777;
+    color: var(--text-muted);
 
     font-size: 12px;
 }
 
-
-/* ERROR */
+/* ============================================================
+   ERROR
+   ============================================================ */
 
 .error-message {
-
-    background:
-        rgba(255, 107, 107, 0.08);
-
-    border:
-        1px solid
-        rgba(255, 107, 107, 0.25);
-
-    color: var(--danger);
+    margin-bottom: 22px;
 
     padding: 13px 15px;
 
+    background:
+        rgba(200, 60, 60, 0.08);
+
+    border:
+        1px solid rgba(200, 60, 60, 0.25);
+
     border-radius: 9px;
 
-    font-size: 14px;
+    color: var(--danger);
 
-    margin-bottom: 22px;
+    font-size: 14px;
 
     text-align: center;
 }
 
-
-/* BUTTON */
+/* ============================================================
+   BUTTON
+   ============================================================ */
 
 button {
-
     width: 100%;
-
     height: 54px;
 
     margin-top: 8px;
 
     border: none;
-
     border-radius: 10px;
 
-    background: var(--green);
+    background:
+        linear-gradient(
+            135deg,
+            var(--green),
+            #18bd54
+        );
 
-    color: #000000;
+    color: #050505;
 
     font-size: 15px;
-
     font-weight: 800;
 
     cursor: pointer;
 
     transition:
-        background 0.2s ease,
         transform 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
-
 
 button:hover {
+    background:
+        linear-gradient(
+            135deg,
+            var(--green-light),
+            var(--green)
+        );
 
-    background: var(--green-light);
-
-    transform:
-        translateY(-1px);
+    transform: translateY(-2px);
 
     box-shadow:
-        0 10px 30px
-        rgba(29, 185, 84, 0.20);
+        0 12px 30px
+        rgba(30, 215, 96, 0.18);
 }
 
+/* ============================================================
+   NAVEGAÇÃO
+   ============================================================ */
 
-button:active {
+.onboarding-navigation {
+    display: flex;
 
-    transform:
-        translateY(0);
+    justify-content: center;
+
+    margin-top: 16px;
 }
 
+.onboarding-navigation a {
+    width: 100%;
 
-/* RESPONSIVE */
+    min-height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 0 16px;
+
+    background: #0c0c0c;
+
+    border: 1px solid #252525;
+
+    border-radius: 10px;
+
+    color: #858585;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.onboarding-navigation a:hover {
+    background:
+        rgba(30, 215, 96, 0.06);
+
+    border-color:
+        rgba(30, 215, 96, 0.30);
+
+    color: var(--green-light);
+
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 
 @media (max-width: 700px) {
-
     .onboarding-card {
-
-        padding:
-            32px 22px;
+        padding: 32px 22px;
 
         border-radius: 17px;
     }
 
-
     .intro h1 {
-
         font-size: 25px;
     }
 
-
     .intro p {
-
         font-size: 14px;
     }
 
-
     .logo {
-
         font-size: 32px;
     }
-
 }
