@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NewFlow - Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <span class="logo-icon">♫</span>
+
+            <span>NewFlow</span>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <a
+                href="{{ url_for('recommendations.recommendations') }}"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">⌂</span>
+
+                <span>Início</span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('profile.profile') }}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">◉</span>
+
+                <span>Meu perfil</span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('profile.onboarding') }}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">♫</span>
+
+                <span>Editar gosto</span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="logout"
+            >
+
+                <span>↪</span>
+
+                <span>Sair</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    Seu espaço musical
+                </p>
+
+                <h1>
+                    Olá, {{ usuario_nome }} 👋
+                </h1>
+
+            </div>
+
+
+            <div class="user-area">
+
+                <div class="user-avatar">
+
+                    {{ usuario_nome[0]|upper }}
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- FLASH MESSAGES -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for category, message in messages %}
+
+                        <div
+                            class="flash-message {{ category }}"
+                        >
+
+                            {% if category == "success" %}
+
+                                <span>✓</span>
+
+                            {% else %}
+
+                                <span>!</span>
+
+                            {% endif %}
+
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <span class="hero-label">
+                    NEWFLOW AI
+                </span>
+
+                <h2>
+                    Descubra músicas<br>
+                    feitas para você.
+                </h2>
+
+                <p>
+                    Nossa inteligência artificial analisa
+                    seu gosto musical e encontra músicas
+                    que combinam com você.
+                </p>
+
+
+                <a
+                    href="{{ url_for('recommendations.generate_recommendations') }}"
+                    class="generate-button"
+                    id="generateButton"
+                >
+
+                    <span class="button-icon">
+                        ✦
+                    </span>
+
+                    <span class="button-text">
+                        Gerar novas recomendações
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <div class="hero-decoration">
+
+                <div class="music-circle">
+
+                    <span>♫</span>
+
+                </div>
+
+                <div class="music-note note-1">♪</div>
+
+                <div class="music-note note-2">♫</div>
+
+                <div class="music-note note-3">♬</div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- MUSICAL TASTE -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        SEU PERFIL
+                    </span>
+
+                    <h2>
+                        Seu gosto musical
+                    </h2>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('profile.profile') }}"
+                    class="see-more"
+                >
+                    Ver perfil →
+                </a>
+
+            </div>
+
+
+            <div class="taste-grid">
+
+
+                <div class="taste-card">
+
+                    <div class="taste-icon">
+                        ♫
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Gêneros
+                        </span>
+
+                        <strong>
+                            {{ perfil[2] or "Não informado" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="taste-card">
+
+                    <div class="taste-icon">
+                        ★
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Artistas
+                        </span>
+
+                        <strong>
+                            {{ perfil[3] or "Não informado" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="taste-card">
+
+                    <div class="taste-icon">
+                        ♥
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Músicas favoritas
+                        </span>
+
+                        <strong>
+                            {{ perfil[4] or "Não informado" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="taste-card">
+
+                    <div class="taste-icon">
+                        ☺
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Humor
+                        </span>
+
+                        <strong>
+                            {{ perfil[5] or "Não informado" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- RECOMMENDATIONS -->
+
+        <section class="section recommendations-section">
+
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        NEWFLOW AI
+                    </span>
+
+                    <h2>
+                        Recomendações para você
+                    </h2>
+
+                    <p class="section-description">
+                        Selecionamos músicas com base no seu
+                        perfil musical.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            {% if recomendacoes %}
+
+
+                <div class="recommendations-grid">
+
+
+                    {% for recomendacao in recomendacoes %}
+
+
+                        <article class="recommendation-card">
+
+
+                            <div class="album-placeholder">
+
+                                <span>♫</span>
+
+                            </div>
+
+
+                            <div class="recommendation-number">
+
+                                {{ "%02d"|format(loop.index) }}
+
+                            </div>
+
+
+                            <div class="recommendation-content">
+
+                                <span class="recommendation-label">
+                                    RECOMENDAÇÃO {{ loop.index }}
+                                </span>
+
+
+                                <h3>
+                                    {{ recomendacao[1] }}
+                                </h3>
+
+
+                                <p class="artist">
+                                    {{ recomendacao[2] }}
+                                </p>
+
+
+                                <div class="reason">
+
+                                    <span class="reason-icon">
+                                        ✦
+                                    </span>
+
+                                    <p>
+                                        {{ recomendacao[3] }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                        </article>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- EMPTY STATE -->
+
+                <div class="empty-recommendations">
+
+                    <div class="empty-icon">
+                        ♫
+                    </div>
+
+
+                    <h3>
+                        Ainda não temos recomendações
+                    </h3>
+
+
+                    <p>
+                        Clique no botão acima para deixar
+                        nossa inteligência artificial descobrir
+                        novas músicas para você.
+                    </p>
+
+
+                    <a
+                        href="{{ url_for('recommendations.generate_recommendations') }}"
+                        class="generate-button secondary"
+                        id="generateButtonEmpty"
+                    >
+
+                        <span class="button-icon">
+                            ✦
+                        </span>
+
+                        <span class="button-text">
+                            Gerar recomendações
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+
+        <!-- AI INFORMATION -->
+
+        <section class="ai-section">
+
+
+            <div class="ai-icon">
+                ✦
+            </div>
+
+
+            <div class="ai-content">
+
+                <span class="section-label">
+                    INTELIGÊNCIA ARTIFICIAL
+                </span>
+
+                <h2>
+                    Recomendações que aprendem com você.
+                </h2>
+
+                <p>
+                    O NewFlow utiliza inteligência artificial
+                    para analisar seus gêneros, artistas,
+                    músicas favoritas, humor e décadas
+                    preferidas. Quanto mais você interage,
+                    melhores ficam suas recomendações.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            <p>
+                © 2026 NewFlow. Seu universo musical.
+            </p>
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- JAVASCRIPT -->
+
+    <script
+        src="{{ url_for('static', filename='js/dashboard.js') }}"
+    ></script>
+
+
+</body>
+
+</html>

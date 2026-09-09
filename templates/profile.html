@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Meu Perfil | NewFlow</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/profile.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <main class="profile-container">
+
+        <section class="profile-card">
+
+            <!-- LOGO -->
+
+            <div class="logo">
+                <span>New</span>Flow
+            </div>
+
+
+            <!-- CABEÇALHO -->
+
+            <div class="profile-header">
+
+                <div class="profile-icon">
+                    🎵
+                </div>
+
+                <div>
+
+                    <h1>
+                        Olá, {{ usuario_nome }}! 👋
+                    </h1>
+
+                    <p>
+                        Este é o seu perfil musical.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- INFORMAÇÕES DA CONTA -->
+
+            <div class="section">
+
+                <h2>
+                    👤 Sua conta
+                </h2>
+
+                <div class="account-info">
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Nome
+                        </span>
+
+                        <span class="info-value">
+                            {{ usuario_nome }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            E-mail
+                        </span>
+
+                        <span class="info-value">
+                            {{ usuario_email }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERFIL MUSICAL -->
+
+            <div class="section">
+
+                <h2>
+                    🎧 Seu gosto musical
+                </h2>
+
+
+                <div class="music-grid">
+
+
+                    <!-- GÊNEROS -->
+
+                    <div class="music-card">
+
+                        <div class="music-card-icon">
+                            🎸
+                        </div>
+
+                        <div>
+
+                            <span class="music-card-title">
+                                Gêneros
+                            </span>
+
+                            <p>
+                                {{ perfil[2] or "Não informado" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ARTISTAS -->
+
+                    <div class="music-card">
+
+                        <div class="music-card-icon">
+                            🎤
+                        </div>
+
+                        <div>
+
+                            <span class="music-card-title">
+                                Artistas favoritos
+                            </span>
+
+                            <p>
+                                {{ perfil[3] or "Não informado" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MÚSICAS -->
+
+                    <div class="music-card">
+
+                        <div class="music-card-icon">
+                            🎧
+                        </div>
+
+                        <div>
+
+                            <span class="music-card-title">
+                                Músicas favoritas
+                            </span>
+
+                            <p>
+                                {{ perfil[4] or "Não informado" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HUMOR -->
+
+                    <div class="music-card">
+
+                        <div class="music-card-icon">
+                            😊
+                        </div>
+
+                        <div>
+
+                            <span class="music-card-title">
+                                Humor musical
+                            </span>
+
+                            <p>
+                                {{ perfil[5] or "Não informado" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DÉCADAS -->
+
+                    <div class="music-card">
+
+                        <div class="music-card-icon">
+                            📅
+                        </div>
+
+                        <div>
+
+                            <span class="music-card-title">
+                                Décadas favoritas
+                            </span>
+
+                            <p>
+                                {{ perfil[6] or "Não informado" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AÇÕES -->
+
+            <div class="actions">
+
+                <a
+                    href="{{ url_for('profile.onboarding') }}"
+                    class="primary-button"
+                >
+                    ✏️ Editar perfil musical
+                </a>
+
+                <a
+                    href="{{ url_for('auth.logout') }}"
+                    class="secondary-button"
+                >
+                    Sair da conta
+                </a>
+
+            </div>
+
+
+            <!-- PRÓXIMO PASSO -->
+
+            <div class="recommendation-preview">
+
+                <div class="recommendation-icon">
+                    ✨
+                </div>
+
+                <div>
+
+                    <h3>
+                        Pronto para descobrir novas músicas?
+                    </h3>
+
+                    <p>
+                        Em breve o NewFlow usará inteligência
+                        artificial para encontrar músicas
+                        que combinam com o seu estilo.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

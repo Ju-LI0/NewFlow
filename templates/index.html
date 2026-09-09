@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="NewFlow — descubra músicas personalizadas para você através de inteligência artificial."
+    >
+
+    <title>NewFlow — Seu próximo som</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <header class="navbar">
+
+        <a
+            href="{{ url_for('home') }}"
+            class="logo"
+        >
+            <span class="logo-symbol">N</span>
+            <span class="logo-text">NEWFLOW</span>
+        </a>
+
+        <nav class="nav-links">
+
+            <a href="#como-funciona">
+                Como funciona
+            </a>
+
+            <a href="#newflow-ai">
+                NewFlow AI
+            </a>
+
+        </nav>
+
+        <div class="nav-actions">
+
+            <a
+                href="{{ url_for('auth.login') }}"
+                class="login-link"
+            >
+                Entrar
+            </a>
+
+            <a
+                href="{{ url_for('auth.register') }}"
+                class="nav-button"
+            >
+                Começar agora
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <!-- ==========================================
+             HERO
+        =========================================== -->
+
+        <section class="hero">
+
+            <div class="hero-background"></div>
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+
+                    <span class="badge-dot"></span>
+
+                    NEWFLOW AI
+
+                </div>
+
+                <h1>
+
+                    Encontre seu
+                    <span>próximo som.</span>
+
+                </h1>
+
+                <p class="hero-description">
+
+                    Uma experiência musical personalizada
+                    através de inteligência artificial.
+                    Descubra músicas que combinam com
+                    você, seu momento e seu estilo.
+
+                </p>
+
+                <div class="hero-actions">
+
+                    <a
+                        href="{{ url_for('auth.register') }}"
+                        class="primary-button"
+                    >
+
+                        <span>
+                            Começar agora
+                        </span>
+
+                        <span class="button-arrow">
+                            →
+                        </span>
+
+                    </a>
+
+                    <a
+                        href="#como-funciona"
+                        class="secondary-button"
+                    >
+                        Descobrir como funciona
+                    </a>
+
+                </div>
+
+                <div class="hero-note">
+
+                    <span>✦</span>
+
+                    Recomendações criadas especialmente
+                    para o seu gosto musical.
+
+                </div>
+
+            </div>
+
+            <!-- ======================================
+                 HERO VISUAL
+            ======================================= -->
+
+            <div class="hero-visual">
+
+                <div class="visual-glow"></div>
+
+                <div class="music-interface">
+
+                    <div class="interface-header">
+
+                        <div>
+
+                            <span class="interface-label">
+                                SEU FLOW
+                            </span>
+
+                            <h3>
+                                Descobertas
+                            </h3>
+
+                        </div>
+
+                        <div class="interface-icon">
+                            ✦
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-card main-card">
+
+                        <div class="album-art album-one">
+
+                            <span>♫</span>
+
+                        </div>
+
+                        <div class="music-info">
+
+                            <span class="music-label">
+                                RECOMENDAÇÃO #01
+                            </span>
+
+                            <h4>
+                                Your Next Song
+                            </h4>
+
+                            <p>
+                                NewFlow AI
+                            </p>
+
+                        </div>
+
+                        <div class="play-button">
+                            ▶
+                        </div>
+
+                    </div>
+
+
+                    <div class="music-card">
+
+                        <div class="album-art album-two">
+
+                            <span>♫</span>
+
+                        </div>
+
+                        <div class="music-info">
+
+                            <span class="music-label">
+                                RECOMENDAÇÃO #02
+                            </span>
+
+                            <h4>
+                                Discover More
+                            </h4>
+
+                            <p>
+                                Your personal flow
+                            </p>
+
+                        </div>
+
+                        <div class="small-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-footer">
+
+                        <span>
+                            <span class="status-dot"></span>
+                            IA analisando seu perfil
+                        </span>
+
+                        <span>
+                            NEWFLOW
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             STATS
+        =========================================== -->
+
+        <section class="stats">
+
+            <div class="stat">
+
+                <strong>
+                    01
+                </strong>
+
+                <span>
+                    Perfil personalizado
+                </span>
+
+            </div>
+
+            <div class="stat">
+
+                <strong>
+                    AI
+                </strong>
+
+                <span>
+                    Inteligência artificial
+                </span>
+
+            </div>
+
+            <div class="stat">
+
+                <strong>
+                    ∞
+                </strong>
+
+                <span>
+                    Novas descobertas
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             COMO FUNCIONA
+        =========================================== -->
+
+        <section
+            class="how-section"
+            id="como-funciona"
+        >
+
+            <div class="section-heading">
+
+                <span class="section-label">
+                    COMO FUNCIONA
+                </span>
+
+                <h2>
+                    Seu gosto.
+                    <span>Nosso algoritmo.</span>
+                </h2>
+
+                <p>
+                    O NewFlow aprende com suas preferências
+                    para criar recomendações cada vez mais
+                    alinhadas ao seu estilo.
+                </p>
+
+            </div>
+
+
+            <div class="steps">
+
+                <!-- STEP 01 -->
+
+                <article class="step-card">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                    <div class="step-icon">
+                        ♫
+                    </div>
+
+                    <h3>
+                        Conte seu gosto
+                    </h3>
+
+                    <p>
+                        Informe seus gêneros, artistas,
+                        músicas favoritas, décadas e
+                        até o seu humor musical.
+                    </p>
+
+                </article>
+
+
+                <!-- STEP 02 -->
+
+                <article class="step-card featured">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                    <div class="step-icon">
+                        ✦
+                    </div>
+
+                    <h3>
+                        A IA entende você
+                    </h3>
+
+                    <p>
+                        O NewFlow AI analisa seu perfil
+                        musical e encontra padrões para
+                        entender o que combina com você.
+                    </p>
+
+                </article>
+
+
+                <!-- STEP 03 -->
+
+                <article class="step-card">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                    <div class="step-icon">
+                        ◉
+                    </div>
+
+                    <h3>
+                        Descubra seu flow
+                    </h3>
+
+                    <p>
+                        Receba recomendações personalizadas
+                        e descubra músicas que podem se
+                        tornar suas próximas favoritas.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             NEWFLOW AI
+        =========================================== -->
+
+        <section
+            class="ai-section"
+            id="newflow-ai"
+        >
+
+            <div class="ai-content">
+
+                <span class="section-label">
+                    NEWFLOW AI
+                </span>
+
+                <h2>
+
+                    Não escolha
+                    <span>a próxima música.</span>
+
+                    <br>
+
+                    Deixe o NewFlow
+                    <span>encontrá-la.</span>
+
+                </h2>
+
+                <p>
+
+                    O NewFlow combina seu perfil musical
+                    com inteligência artificial para criar
+                    recomendações que fazem sentido para
+                    você.
+
+                </p>
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="ai-button"
+                >
+
+                    Criar meu perfil
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <div class="ai-visual">
+
+                <div class="ai-orbit orbit-one"></div>
+
+                <div class="ai-orbit orbit-two"></div>
+
+                <div class="ai-core">
+
+                    <span class="core-symbol">
+                        N
+                    </span>
+
+                    <span class="core-text">
+                        AI
+                    </span>
+
+                </div>
+
+                <div class="floating-note note-one">
+                    ♫
+                </div>
+
+                <div class="floating-note note-two">
+                    ✦
+                </div>
+
+                <div class="floating-note note-three">
+                    ♪
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             CTA
+        =========================================== -->
+
+        <section class="cta-section">
+
+            <div class="cta-content">
+
+                <span class="section-label">
+                    SEU PRÓXIMO FLOW
+                </span>
+
+                <h2>
+                    Pronto para
+                    <span>descobrir?</span>
+                </h2>
+
+                <p>
+                    Crie seu perfil musical e deixe a
+                    inteligência artificial encontrar
+                    novas músicas para você.
+                </p>
+
+                <a
+                    href="{{ url_for('auth.register') }}"
+                    class="primary-button large"
+                >
+
+                    <span>
+                        Começar agora
+                    </span>
+
+                    <span class="button-arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
+
+    <footer class="footer">
+
+        <div class="footer-brand">
+
+            <a
+                href="{{ url_for('home') }}"
+                class="logo"
+            >
+
+                <span class="logo-symbol">
+                    N
+                </span>
+
+                <span class="logo-text">
+                    NEWFLOW
+                </span>
+
+            </a>
+
+            <p>
+                Seu gosto. Seu momento. Seu flow.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="#como-funciona">
+                Como funciona
+            </a>
+
+            <a href="#newflow-ai">
+                NewFlow AI
+            </a>
+
+            <a href="{{ url_for('auth.login') }}">
+                Entrar
+            </a>
+
+            <a href="{{ url_for('auth.register') }}">
+                Criar conta
+            </a>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 NewFlow. Todos os direitos reservados.
+            </span>
+
+            <span>
+                Desenvolvido com ✦ e música.
+            </span>
+
+        </div>
+
+    </footer>
+
+
+</body>
+
+</html>

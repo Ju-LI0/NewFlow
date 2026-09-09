@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Seu perfil musical | NewFlow</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/onboarding.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <main class="onboarding-container">
+
+        <section class="onboarding-card">
+
+            <div class="logo">
+                <span>New</span>Flow
+            </div>
+
+            <div class="progress">
+
+                <div class="progress-bar"></div>
+
+            </div>
+
+            <div class="intro">
+
+                <span class="music-icon">🎵</span>
+
+                <h1>
+                    Vamos conhecer<br>
+                    seu gosto musical
+                </h1>
+
+                <p>
+                    Conte um pouco sobre suas preferências.
+                    Usaremos essas informações para encontrar
+                    músicas que realmente combinam com você.
+                </p>
+
+            </div>
+
+            {% if erro %}
+
+                <div class="error-message">
+                    {{ erro }}
+                </div>
+
+            {% endif %}
+
+            <form method="POST">
+
+                <div class="form-group">
+
+                    <label for="generos">
+                        🎸 Quais gêneros você gosta?
+                    </label>
+
+                    <input
+                        type="text"
+                        id="generos"
+                        name="generos"
+                        placeholder="Ex: Rock, Pop, Rap, Sertanejo..."
+                        value="{{ perfil[2] if perfil else '' }}"
+                        required
+                    >
+
+                    <small>
+                        Você pode informar vários gêneros.
+                    </small>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="artistas">
+                        🎤 Quais artistas você mais gosta?
+                    </label>
+
+                    <input
+                        type="text"
+                        id="artistas"
+                        name="artistas"
+                        placeholder="Ex: Bruno Mars, Eminem, Coldplay..."
+                        value="{{ perfil[3] if perfil else '' }}"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="musicas_favoritas">
+                        🎧 Quais são suas músicas favoritas?
+                    </label>
+
+                    <textarea
+                        id="musicas_favoritas"
+                        name="musicas_favoritas"
+                        placeholder="Ex: Blinding Lights, Lose Yourself..."
+                    >{{ perfil[4] if perfil else '' }}</textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="humor_preferido">
+                        😊 Que tipo de música combina com seu humor?
+                    </label>
+
+                    <select
+                        id="humor_preferido"
+                        name="humor_preferido"
+                    >
+
+                        <option value="">
+                            Selecione uma opção
+                        </option>
+
+                        <option
+                            value="animado"
+                            {% if perfil and perfil[5] == "animado" %}selected{% endif %}
+                        >
+                            🔥 Animado
+                        </option>
+
+                        <option
+                            value="calmo"
+                            {% if perfil and perfil[5] == "calmo" %}selected{% endif %}
+                        >
+                            🌙 Calmo
+                        </option>
+
+                        <option
+                            value="melancolico"
+                            {% if perfil and perfil[5] == "melancolico" %}selected{% endif %}
+                        >
+                            🌧️ Melancólico
+                        </option>
+
+                        <option
+                            value="romantico"
+                            {% if perfil and perfil[5] == "romantico" %}selected{% endif %}
+                        >
+                            ❤️ Romântico
+                        </option>
+
+                        <option
+                            value="variado"
+                            {% if perfil and perfil[5] == "variado" %}selected{% endif %}
+                        >
+                            🎶 Depende do momento
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="decadas_preferidas">
+                        📅 Quais décadas você prefere?
+                    </label>
+
+                    <input
+                        type="text"
+                        id="decadas_preferidas"
+                        name="decadas_preferidas"
+                        placeholder="Ex: 80s, 90s, 2000s, atuais..."
+                        value="{{ perfil[6] if perfil else '' }}"
+                    >
+
+                </div>
+
+
+                <button type="submit">
+                    Salvar meu perfil musical
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
