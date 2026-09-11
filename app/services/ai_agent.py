@@ -1,9 +1,8 @@
 import os
 
 from dotenv import load_dotenv
-
 from google import genai
-
+from google.genai import types
 from pydantic import BaseModel, Field
 
 
@@ -26,8 +25,19 @@ if not GEMINI_API_KEY:
     )
 
 
+# ============================================================
+# CLIENTE GEMINI
+# ============================================================
+
 client = genai.Client(
-    api_key=GEMINI_API_KEY
+    api_key=GEMINI_API_KEY,
+    http_options=types.HttpOptions(
+        api_version="v1",
+        timeout=8000,
+        retry_options=types.HttpRetryOptions(
+            attempts=1
+        )
+    )
 )
 
 
