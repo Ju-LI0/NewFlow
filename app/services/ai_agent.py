@@ -1,8 +1,11 @@
 import os
 
 from dotenv import load_dotenv
+
 from google import genai
+
 from google.genai import types
+
 from pydantic import BaseModel, Field
 
 
@@ -33,7 +36,7 @@ client = genai.Client(
     api_key=GEMINI_API_KEY,
     http_options=types.HttpOptions(
         api_version="v1",
-        timeout=8000,
+        timeout=12000,
         retry_options=types.HttpRetryOptions(
             attempts=1
         )
@@ -42,14 +45,10 @@ client = genai.Client(
 
 
 # ============================================================
-# MODELOS GEMINI
+# MODELO GEMINI
 # ============================================================
 
 MODELO_PRINCIPAL = "gemini-3.8-flash"
-
-MODELO_FALLBACK_1 = "gemini-3.7-flash"
-
-MODELO_FALLBACK_2 = "gemini-3.6-flash"
 
 
 # ============================================================
@@ -132,6 +131,8 @@ def _verificar_erro_temporario(error):
         or "timeout" in mensagem
         or "timed out" in mensagem
         or "readtimeout" in mensagem
+        or "apitimeouterror" in mensagem
+        or "request timed out" in mensagem
     )
 
 
@@ -162,6 +163,7 @@ def _chamar_modelo(
         "input": prompt
     }
 
+
     # --------------------------------------------------------
     # SAÍDA ESTRUTURADA
     # --------------------------------------------------------
@@ -177,9 +179,60 @@ def _chamar_modelo(
             )
         }
 
-    interaction = client.interactions.create(
-        **argumentos
-    )
+
+    try:
+
+        interaction = client.interactions.create(
+            **argumentos
+        )
+
+    except Exception as error:
+
+        print()
+        print("==============================")
+        print("ERRO NA CHAMADA DO GEMINI")
+        print("==============================")
+        print(
+            f"Modelo: {modelo}"
+        )
+        print(
+            f"Tipo: {type(error).__name__}"
+        )
+        print(
+            f"Mensagem: {str(error)}"
+        )
+        print()
+
+        # ----------------------------------------------------
+        # RATE LIMIT
+        # ----------------------------------------------------
+
+        if _verificar_erro_rate_limit(error):
+
+            raise GeminiRateLimitError(
+                "O limite ou quota do Gemini "
+                "foi atingido temporariamente."
+            ) from error
+
+
+        # ----------------------------------------------------
+        # ERRO TEMPORÁRIO / TIMEOUT
+        # ----------------------------------------------------
+
+        if _verificar_erro_temporario(error):
+
+            raise GeminiTemporaryError(
+                "O Gemini demorou muito para responder "
+                "ou está temporariamente indisponível."
+            ) from error
+
+
+        # ----------------------------------------------------
+        # ERRO DESCONHECIDO
+        # ----------------------------------------------------
+
+        raise
+
 
     if not interaction:
 
@@ -187,11 +240,13 @@ def _chamar_modelo(
             "O Gemini não retornou uma interação."
         )
 
+
     if not interaction.output_text:
 
         raise GeminiTemporaryError(
             "O Gemini retornou uma resposta vazia."
         )
+
 
     print()
     print(
@@ -206,7 +261,7 @@ def _chamar_modelo(
 
 
 # ============================================================
-# EXECUTA GEMINI COM FALLBACK
+# EXECUTA GEMINI
 # ============================================================
 
 def _executar_interacao(
@@ -214,105 +269,40 @@ def _executar_interacao(
     resposta_estruturada=False
 ):
 
-    modelos = [
-        MODELO_PRINCIPAL,
-        MODELO_FALLBACK_1,
-        MODELO_FALLBACK_2
-    ]
+    try:
 
-    ultimo_erro = None
-
-    for indice, modelo in enumerate(modelos):
-
-        try:
-
-            response = _chamar_modelo(
-                modelo=modelo,
-                prompt=prompt,
-                resposta_estruturada=(
-                    resposta_estruturada
-                )
+        response = _chamar_modelo(
+            modelo=MODELO_PRINCIPAL,
+            prompt=prompt,
+            resposta_estruturada=(
+                resposta_estruturada
             )
+        )
 
-            return response
+        return response
 
-        except Exception as error:
 
-            ultimo_erro = error
+    except GeminiRateLimitError:
 
-            print()
-            print("==============================")
-            print("ERRO NO GEMINI")
-            print("==============================")
-            print(
-                f"Modelo: {modelo}"
-            )
-            print(
-                f"Tipo: {type(error).__name__}"
-            )
-            print(
-                f"Mensagem: {str(error)}"
-            )
-            print()
+        print()
+        print(
+            "⚠️ Limite/quota do Gemini atingido."
+        )
+        print()
 
-            # ------------------------------------------------
-            # RATE LIMIT
-            # ------------------------------------------------
+        raise
 
-            if _verificar_erro_rate_limit(error):
 
-                print(
-                    "⚠️ Limite/quota do Gemini atingido."
-                )
+    except GeminiTemporaryError:
 
-                if indice < len(modelos) - 1:
+        print()
+        print(
+            "⚠️ Gemini temporariamente "
+            "indisponível."
+        )
+        print()
 
-                    print(
-                        "➡️ Tentando próximo modelo..."
-                    )
-
-                    continue
-
-                raise GeminiRateLimitError(
-                    "O limite ou quota do Gemini "
-                    "foi atingido temporariamente."
-                ) from error
-
-            # ------------------------------------------------
-            # ERROS TEMPORÁRIOS
-            # ------------------------------------------------
-
-            if _verificar_erro_temporario(error):
-
-                print(
-                    "⚠️ Gemini temporariamente "
-                    "indisponível."
-                )
-
-                if indice < len(modelos) - 1:
-
-                    print(
-                        "➡️ Tentando próximo modelo..."
-                    )
-
-                    continue
-
-                raise GeminiTemporaryError(
-                    "Os modelos do Gemini estão "
-                    "temporariamente indisponíveis. "
-                    "Tente novamente em alguns instantes."
-                ) from error
-
-            # ------------------------------------------------
-            # ERRO NÃO RECUPERÁVEL
-            # ------------------------------------------------
-
-            raise
-
-    raise GeminiTemporaryError(
-        "Não foi possível obter resposta "
-        "do Gemini."
-    ) from ultimo_erro
+        raise
 
 
 # ============================================================
@@ -345,6 +335,7 @@ Você é o agente musical do NewFlow.
 
 Sua função é recomendar músicas personalizadas
 com base no perfil musical do usuário.
+
 
 PERFIL DO USUÁRIO
 
@@ -396,10 +387,12 @@ REGRAS
 9. Retorne exatamente 5 recomendações.
 """
 
+
     interaction = _executar_interacao(
         prompt=prompt,
         resposta_estruturada=True
     )
+
 
     # ========================================================
     # VALIDAR JSON
@@ -413,6 +406,7 @@ REGRAS
                 interaction.output_text
             )
         )
+
 
     except Exception as error:
 
@@ -441,6 +435,7 @@ REGRAS
             "Tente gerar novamente."
         ) from error
 
+
     # ========================================================
     # VALIDAR QUANTIDADE
     # ========================================================
@@ -452,12 +447,14 @@ REGRAS
             "recomendação."
         )
 
+
     if len(resultado.recomendacoes) != 5:
 
         raise ValueError(
             "O Gemini não retornou exatamente "
             "5 recomendações."
         )
+
 
     # ========================================================
     # SUCESSO
@@ -469,6 +466,7 @@ REGRAS
     )
     print()
 
+
     for indice, recomendacao in enumerate(
         resultado.recomendacoes,
         start=1
@@ -479,6 +477,7 @@ REGRAS
             f"{recomendacao.musica} - "
             f"{recomendacao.artista}"
         )
+
 
     print()
 
